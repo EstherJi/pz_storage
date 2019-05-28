@@ -20,7 +20,7 @@ storage.remove('name');
 storage.clear();
 // 存储对象，key - value形式
 storage.setList({
-	a: '1',
+   a: '1',
    b: '2.1',
    c: ['a', 'b', 'c'],
    d: {
