@@ -1,6 +1,6 @@
 {
   "name": "pz_storage",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "storage for localStorage & sessionStorage",
   "main": "dist/storage.js",
   "scripts": {
