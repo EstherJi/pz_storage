@@ -2,6 +2,9 @@
 
 > 封装localStorage和sessionStorage，使保存值类型与获取对应值的类型一致，可以存入对象
 
+#### 2020-09-22 更新
+- 单个存储时增加过期时效，取值时判断是否在有效时间
+
 1、安装
 ```
 npm install pz_storage
@@ -10,8 +13,8 @@ npm install pz_storage
 ```
 import storage from 'pz_storage';
 
-// 存储单个值
-storage.set('name', 'esther');
+// 存储单个值, expired 过期时效，单位：小时，默认 2 小时，可不传
+storage.set('name', 'esther', 2);
 // 获取单个值
 storage.get('name');
 // 删除单个值

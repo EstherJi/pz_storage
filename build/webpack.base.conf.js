@@ -3,7 +3,8 @@ const path = require('path');
 
 module.exports = {
 	context: path.resolve(__dirname, '../'),
-	entry: ['babel-polyfill', './src/index.js'],
+	entry: ['./src/index.js'],
+	devtool: 'inline-source-map',
 	output: {
 		path: path.resolve(__dirname, '../dist'),
 		filename: 'storage.js',

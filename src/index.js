@@ -3,8 +3,8 @@
 	storage
 
 	import storage from 'pz_storage';
-	storage.set('name', 'value')
-	storage.session.set('name', 'value')
+	storage.set('name', 'value', 2)
+	storage.session.set('name', 'value', 2)
 */
 
 // 移动端无痕模式下localStorage使用
@@ -43,10 +43,11 @@ let dataList = [];
 
 const storeApi = {
 
-	set(key, value){
+	// expired 以小时(hours)为单位，默认 2 小时
+	set(key, value, expired = 2){
 		if(!value) return;
 
-		dataList.push({ key: key, value: value });
+		dataList.push({ key, value, expired, startTime: Date.now() });
 		this.storage.setItem(key, serialize(value));
 	},
 
@@ -54,6 +55,11 @@ const storeApi = {
 		if(!key) return;
 
 		const val = deserialize(key);
+		if(!val){
+			this.storage.removeItem(key);
+			dataList = dataList.filter(item => item.key !== key);
+		}
+
 		return val;
 	},
 
@@ -74,7 +80,10 @@ const storeApi = {
 	// 批量保存 obj => (key, value)
 	setList(obj){
 		for(let i in obj){
-			dataList.push({ key: i, value: obj[i] });
+			dataList.push({ 
+				key: i, 
+				value: obj[i]
+			});
 			this.storage.setItem(i, serialize(obj[i]));
 		}
 	},
@@ -85,7 +94,12 @@ const storeApi = {
 
 		for(let key of array){
 			if(this.storage.getItem(key)){
-				data[key] = deserialize(key);
+				let value = deserialize(key);
+				if(!value){
+					this.storage.removeItem(key);
+					dataList = dataList.filter(item => item.key !== key);
+				}
+				data[key] = value;
 			}
 		}
 
@@ -121,9 +135,14 @@ const deserialize = function(key){
 	if(!key) return;
 
 	let val = '';
+
 	dataList.map((item) => {
-		if(item.key === key){
-			val = item.value;
+		if(item.expired && Date.now() > item.startTime + (1000 * 60 * 60 * item.expired)){
+			val = '';			
+		}else{
+			if(item.key === key){
+				val = item.value;
+			}
 		}
 	})
 
